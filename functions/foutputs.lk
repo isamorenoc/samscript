@@ -1,0 +1,28 @@
+
+/*
+foutputs(output, dir, name);
+
+inputs - es una tabla que incluye las variables y sus unidades
+dir - es la ruta donde se guardara el archivo
+name - es el nombre del archivo 'inputs.dat'
+
+
+
+output = [['lat', '[grad]'],          // latitud
+         ['lon', '[grad]'],          // longitud
+         ['dni_des', '[W/m2]']      // desig point DNI
+         ];
+
+*/
+foutputs = define(output, dir, name)
+{
+    file = dir + name;
+    f = open(file, 'w');
+    write_line(f, '## Valores de la simulacion');
+
+    for(i=0; i<#output; i++){
+        var = get(output[i][0]);
+        write_line(f, output[i][0] + ' = ' + var + ' ' + output[i][1]);
+	}
+	return 0;
+};

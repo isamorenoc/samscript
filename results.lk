@@ -1,0 +1,68 @@
+import "/home/isaias/Documents/work/CIO-Aguascalientes/rankineDemanda/sam/ppa/functions/foutputs.lk";
+import "/home/isaias/Documents/work/CIO-Aguascalientes/rankineDemanda/sam/ppa/functions/fhelio.lk";
+import "/home/isaias/Documents/work/CIO-Aguascalientes/rankineDemanda/sam/ppa/functions/hourlyData.lk";
+
+
+rut="/home/isaias/Documents/work/CIO-Aguascalientes/rankineDemanda/sam/ppa/";
+modelo = "bcs_opt";  // bcs_b, bcs_p, sin_b
+active_case(modelo);
+//set("override_opt", 1);
+simulate();
+//set("override_opt", 0);
+
+dir = rut + modelo + "/";
+mkdir(dir, false);
+
+// Valores de la simulacion. Entradas
+//===================================
+input = [["lat", "[grad]"],           // latitud
+         ["lon", "[grad]"],           // longitud
+         ["dni_des", "[W/m2]"],       // desig point DNI
+         ["solarm", "[-]"],           // solar multiple
+         ["P_ref", "[MWe]"],          // design turbine gross output
+         ["tshours", "[hours]"],      // full load hours of storage
+         ["helio_width", "[m]"],      // heliostat width
+         ["helio_height","[m]"],      // heliostat height
+         ["n_facet_x", "[-]"],        // number of heliostat facets -X
+         ["n_facet_y", "[-]"],        // number of heliostat facets -Y
+         ["csp.pt.sf.heliostat_area", " [m2]"],  // single heliostat area
+         ["n_hel", "[-]"],            // number of heliostat
+         ["h_tower", "[m]"],          // tower height
+         ["rec_height", "[m]"],         // receiver height, #External
+         ["D_rec", "[m]"],              // receiver diameter, #External
+         ["N_panels", "[m]"],           // number of panel, #External
+         ["ppa_price_input", "[$/kWh]"] // PPA price
+         ];
+
+name = "inputs.dat";
+foutputs(input, dir, name);
+
+// Valores de la simulacion. Salidas
+//==================================
+output = [["annual_energy","[kWh]"],    // annual AC energy (year 1)
+          ["capacity_factor", "[%]"],   // capacity factor
+		  ["lcoe_nom", "[c/kWh]"],      // LCoE levelized cost of energy nominal
+		  ["lcoe_real","[c/kWh]"],      // LCoE levelized cost of energy real
+		  ["project_return_aftertax_npv", "[$]"], // NPV net present value
+		  ["project_return_aftertax_irr", "[%]"]  // IRR internal rate of return
+         ];
+         
+name ="outputs.dat";
+foutputs(output, dir, name);
+
+// Exportar campo de heli"ostatos
+//===============================
+hfield(dir);
+
+// Hourly Data
+//============
+hData = [["beam", "[W/m2]"],       // Resource beam normal irradiance
+         ["gen", "[kW]"],         // system power generated
+		 ["e_ch_tes", "[MWht]"],  // TES charge state
+		 ["q_ch_tes", "[MWt]"],   // TES charge thermal power
+		 ["q_dc_tes", "[MWt]"],   // TES discharge thermal power
+		 ["defocus", "[-]"]       // field optical focus fraction
+		 ];
+		 
+name = "hourlyData.dat";
+hourlydata(hData, dir, name);

@@ -1,0 +1,49 @@
+import '/home/isaias/Documents/work/CIO-Aguascalientes/rankineDemanda/sam/ppa/functions/parametrico.lk';
+rut = '/home/isaias/Documents/work/CIO-Aguascalientes/rankineDemanda/sam/ppa/';
+modelo = 'bcs_p';
+active_case(modelo);
+
+/*
+|Archivo | paramertro | opt | Comentario              |
+|--------|------------|-----|-------------------------|
+| ts     |  tshours   |  0  | Almacenamiento termico  |
+| dpDNI  |  dni_des   |  1  | Punto de dise~no DNI    |
+| sm     |  solarm    |  1  | Solar Multiple          |
+| turbine|  P_ref     |  1  | genaci'on de la turbina |
+
+*/ 
+
+parametro = 'P_ref';    // parametro a analizar
+file = 'turbine';              // file csv en './data/file.csv'
+opt = 1;                  // Optimizar el campo en cada simulaci'on. opt=0/1
+
+outputs=[['lat', '[grad]'],          // latitud
+         ['lon', '[grad]'],          // longitud
+         ['dni_des', '[W/m2]'],      // desig point DNI
+         ['solarm', '[-]'],          // solar multiple
+         ['P_ref', '[MWe]'],         // design turbine gross output
+         ['tshours', '[hours]'],     // full load hours of storage
+         ['helio_width', '[m]'],     // heliostat width
+         ['helio_height', '[m]'],    // heliostat height
+         ['n_facet_x', '[-]'],       // number of heliostat facets -X
+         ['n_facet_y', '[-]'],       // number of heliostat facets -Y
+         ['csp.pt.sf.heliostat_area', ' [m2]'],  // single heliostat area
+         ['n_hel', '[-]'],           // number of heliostat
+         ['N_hel_calc', '[-]'],      // number of heliostat calc (optimize)
+         ['h_tower', '[m]'],         // tower height
+         ['h_tower_calc', '[m]'],    // tower height calc (optimize)
+         ['rec_height', '[m]'],        // receiver height, #External
+         ['rec_height_calc', '[m]'],   // receiver height, calc (optimize) #External
+         ['D_rec', '[m]'],             // receiver diameter, #External
+         ['D_rec_calc', '[m]'],        // receiver diameter, calc (optimize) #External
+         ['N_panels', '[m]'],          // number of panel, #External
+         //Outputs
+         ['annual_energy','[kWh]'],  // annual AC energy (year 1)
+		 ['capacity_factor', '[%]'], // capacity factor
+		 ['lcoe_nom', '[c/kWh]'],    // LCoE levelized cost of energy nominal
+		 ['lcoe_real', '[c/kWh]'],    // LCoE levelized cost of energy real
+		 ['project_return_aftertax_npv', '[$]'], // NPV net present value
+		 ['project_return_aftertax_irr', '[%]']  // IRR internal rate of return
+		];
+
+parametric(outputs, parametro, rut, file, opt);

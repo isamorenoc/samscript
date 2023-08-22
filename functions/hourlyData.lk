@@ -1,0 +1,65 @@
+
+/*
+hoy - hora del agno (1-8760 hrs)
+
+HoY  hour  day   mes
+64   16    3     Jan
+*/
+HoY = define(hoy){
+
+	months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	days = [31,28,31,30,31,30,31,31,30,31,30,31];
+
+	doy = to_int(hoy/24);
+	h = hoy - doy*24;
+
+	i = 0;
+	D = 31;
+	while (doy >= D){
+		D = D + days[i+1];
+		i = i+1;
+	}
+	day = days[i] - (D - doy);
+	x =  to_string(hoy + 1) + ', '+ to_string(day + 1) + '/'+ to_string(months[i] + '/2023 '+ to_string(h+1) + ':00:00');
+	return x;
+};
+
+/*
+// Hourly Data
+
+hData = [['gen', '[kW]'],          // system power generated
+		 ['e_ch_tes', '[MWht]'],   // TES charge state
+		 ['defocus', '[-]']        // field optical focus fraction
+		 ];
+
+*/
+hourlydata = define(hData, dir, name){
+
+    file = dir + name;
+    f = open(file, 'w');
+    write(f, '#HoY' + ', ' + 'H:M:S D/M/Y' +', ');
+    
+    for(i=0; i<#hData; i++)
+        write(f, hData[i][0] + ', ');
+        write(f, '\n');
+		write(f, '#[-]' + ', ' + '[-]' + ', ');
+	for(i=0; i<#hData; i++)
+		write(f, hData[i][1] + ', ');
+	write(f, '\n');
+
+	for(i=0; i<#hData; i++){
+		var[i] = get(hData[i][0]);
+	}
+
+	for(j=0; j<8760; j++){
+		write(f, HoY(j) + ', ');
+		for(i=0; i<#hData; i++){
+			write(f, var[i][j] + ', ');
+        }
+        write(f, '\n');
+	}
+    return 0;
+};
+
+
+

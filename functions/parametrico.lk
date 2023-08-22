@@ -1,0 +1,49 @@
+
+/*
+
+parametric(outputs, parametro, rut, ifile, opt);
+
+outputs - es una tabla que incluye las variables y sus unidades que seran guardadas
+rut     - es la ruta donde se encuentra el archivo sam.
+ifile   - es el nombre del archivo de entrada ubicado en './data/file.csv'
+opt     - 1/0. Si el valor es uno, optimiza en cada simulaci'on el campo de heli'ostatos
+
+outputs = [['lat', '[grad]'],          // latitud
+         ['lon', '[grad]'],          // longitud
+         ['dni_des', '[W/m2]']      // desig point DNI
+         ];
+*/
+parametric = define(outputs, parametro, rut, ifile, opt){
+
+	data    = rut + 'data/' + ifile + '.csv';
+	dir = rut + ifile + '/';
+	mkdir(dir, 'false');
+	
+    ration = csvread(data, {'skip'=1, 'numeric'=true, 'table'=false});
+    
+    file = dir + ifile + 'Results.csv';
+    f = open(file, 'w');
+    for(i=0; i<#outputs; i++)
+        write(f, outputs[i][0] + ', ');
+    write(f, '\n');
+    for(i=0; i<#outputs; i++)
+        write(f, outputs[i][1] + ', ');
+    write(f, '\n');
+
+    for(i=0; i<#ration; i++){
+        x = ration[i][0];
+        set(parametro, x);
+        set('override_opt', opt);
+        simulate();
+        set('override_opt', 0);
+        outln('Simulacion: ' + x);
+
+        for(j=0; j<#outputs; j++){
+            var = get(outputs[j][0]);
+            write(f, var + ', ');
+            }
+        write(f, '\n');
+    }
+    
+	return 0;
+};

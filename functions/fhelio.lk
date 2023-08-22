@@ -1,0 +1,15 @@
+/*
+hfield(dir);
+
+Exportar campo de heli'ostatos y requiere la ruta para guardar el archivo
+'hfield.dat'
+*/
+
+hfield = define(dir){
+    file = dir + 'hfield.dat';
+    f = open(file, 'w');
+    H = get('helio_positions');
+    for(i=0; i<#H; i++)
+        write_line(f, H[i][0] + '\t' + H[i][1]);
+    return 0;
+};
